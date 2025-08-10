@@ -163,10 +163,10 @@ body {
 
 .title .hat{
     position: absolute;
-    right: 45px;
+    right: 135px;
     top: -350px;
     transform: rotate(-40deg);
-    z-index: -1;
+    z-index: 2;
     animation: topHat 4s 7s forwards ease;
 }
 @keyframes topHat{
