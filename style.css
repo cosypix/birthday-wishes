@@ -702,14 +702,14 @@ body {
         animation: scaleCricle 3s 15s forwards ease-in-out;
     }
 
-    .title .hat {
+/*     .title .hat {
         position: absolute;
         right: -98px;
         top: -51px !important;
         transform: rotate(-40deg);
         z-index: -1;
         animation: topHat 4s 7s forwards ease;
-    }
+    } */
 
     .box__letter .letter__border {
         position: absolute;
