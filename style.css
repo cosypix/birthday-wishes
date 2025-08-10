@@ -161,14 +161,9 @@ body {
     color: var(--color-text-pink);
 }
 
-.title {
-    position: relative;
-    width: 100%; /* ensures positioning context spans full screen */
-}
-
-.title .hat {
-    position: absolute; /* relative to full-width .title */
-    right: 135px;
+.hat {
+     /* relative to full-width .title */
+    right: 0px;
     top: -350px;
     transform: rotate(-40deg);
     z-index: 2;
