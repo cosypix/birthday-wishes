@@ -16,7 +16,7 @@
     --color-border: #cbb4e4;
 }
 html{
-    zoom: 0.8;
+    zoom: 0.9;
 }
 body {
     position: relative;
@@ -161,23 +161,25 @@ body {
     color: var(--color-text-pink);
 }
 
-.hat {
-     /* relative to full-width .title */
-    right: 0px;
+.title .hat{
+    position: absolute;
+    right: 45px;
     top: -350px;
     transform: rotate(-40deg);
-    z-index: 2;
-    animation: topHat 4s 7s forwards ease;
+    z-index: 500000;
+    animation: topHat 13s 15s forwards ease;
 }
 
 @keyframes topHat {
-    20%, 30% {
+    0%, 0% {
         top: -30px;
+        right: -655px;
         transform-origin: left;
         transform: rotate(-40deg);
     }
     35%, 100% {
-        top: -30px;
+        right: -665px;
+        top: -35px;
         transform: rotate(0deg);
     }
 }
@@ -704,15 +706,6 @@ body {
         animation: scaleCricle 3s 15s forwards ease-in-out;
     }
 
-/*     .title .hat {
-        position: absolute;
-        right: -98px;
-        top: -51px !important;
-        transform: rotate(-40deg);
-        z-index: -1;
-        animation: topHat 4s 7s forwards ease;
-    } */
-
     .box__letter .letter__border {
         position: absolute;
         width: 90vw;
@@ -942,7 +935,7 @@ body {
 }
 .boxMail .boxMail-container .card2:hover h3{
     animation: texth3 3s forwards;
-    animation-delay: 2s;
+    animation-delay: 1s;
     transition: 1s;
 }
 @keyframes texth3{
@@ -965,8 +958,8 @@ body {
     opacity: 0;
 }
 .boxMail .boxMail-container .card2:hover h2{
-    animation: texth2 2s forwards;
-    animation-delay: 3s;
+    animation: texth2 3s forwards;
+    animation-delay: 1s;
     transition: 1s;
 }
 @keyframes texth2{
