@@ -161,7 +161,7 @@ body {
     color: var(--color-text-pink);
 }
 
-.hat{
+.title .hat{
     position: fixed;
     left: 175px;
     top: -350px;
