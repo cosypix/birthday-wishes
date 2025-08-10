@@ -17,6 +17,7 @@
 }
 html{
     zoom: 0.75;
+    height: 100%;
 }
 body {
     position: relative;
