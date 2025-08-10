@@ -20,6 +20,7 @@ html{
 }
 body {
     zoom: 80%;
+    width: 80%;
     position: relative;
     font-size: 16px;
     margin: 0;
