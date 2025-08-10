@@ -161,25 +161,32 @@ body {
     color: var(--color-text-pink);
 }
 
-.title .hat{
-    position: fixed;
-    left: 175px;
+.title {
+    position: relative;
+    width: 100%; /* ensures positioning context spans full screen */
+}
+
+.title .hat {
+    position: absolute; /* relative to full-width .title */
+    right: 135px;
     top: -350px;
     transform: rotate(-40deg);
     z-index: 2;
     animation: topHat 4s 7s forwards ease;
 }
-@keyframes topHat{
-    20%, 30%{
+
+@keyframes topHat {
+    20%, 30% {
         top: -30px;
         transform-origin: left;
         transform: rotate(-40deg);
     }
-    35%, 100%{
+    35%, 100% {
         top: -30px;
         transform: rotate(0deg);
     }
 }
+
 .date__of__birth, .name{
     display: flex;
     justify-content:space-around;
