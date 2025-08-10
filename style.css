@@ -163,7 +163,7 @@ body {
 
 .title .hat{
     position: fixed;
-    right: 135px;
+    left: 175px;
     top: -350px;
     transform: rotate(-40deg);
     z-index: 2;
