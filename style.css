@@ -16,7 +16,7 @@
     --color-border: #cbb4e4;
 }
 html{
-    height: 100%;
+    zoom: 0.75;
 }
 body {
     position: relative;
