@@ -162,7 +162,7 @@ body {
 }
 
 .title .hat{
-    position: absolute;
+    position: fixed;
     right: 135px;
     top: -350px;
     transform: rotate(-40deg);
