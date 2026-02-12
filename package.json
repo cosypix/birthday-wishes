@@ -20,9 +20,6 @@
     "url": "https://github.com/cosypix/birthday-wishes/issues"
   },
   "homepage": "https://github.com/cosypix/birthday-wishes#readme",
-  "engines": {
-    "node": "18.x"
-  },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",
     "dotenv": "^17.2.4",
