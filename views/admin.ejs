@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wish Maker Admin</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Poppins:wght@400;600&family=Titan+One&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+
+<body>
+    <div id="wrapper">
+        <!-- Floating Elements for Background Atmosphere -->
+        <div class="decorate_star star1" style="--t: 15s;"></div>
+        <div class="decorate_star star2" style="--t: 15.2s;"></div>
+
+        <div class="admin-wrapper">
+            <div id="auth-container">
+                <h2>Admin Login</h2>
+                <div style="text-align: center;">
+                    <button onclick="login()"><i class="fa-brands fa-google"></i> Sign in with Google/Email</button>
+                </div>
+            </div>
+
+            <div id="app-container" style="display: none;">
+                <button onclick="logout()" class="logout-btn">Logout</button>
+                <h1>Create Birthday Wish</h1>
+
+                <form id="wishForm">
+                    <div>
+                        <label for="slug">Unique URL Slug (ex: 'sara-2026')</label>
+                        <input type="text" id="slug" placeholder="e.g. john-birthday" required>
+                    </div>
+
+                    <div>
+                        <label for="recipient_name">Recipient's Name</label>
+                        <input type="text" id="recipient_name" placeholder="e.g. John Doe" required>
+                    </div>
+
+                    <div>
+                        <label for="message_body">Birthday Message</label>
+                        <textarea id="message_body" rows="4"
+                            placeholder="Write your heartfelt message here..."></textarea>
+                    </div>
+
+                    <div>
+                        <label>Main Photo (Circle Profile): </label>
+                        <input type="file" id="main_image" accept="image/*">
+                    </div>
+
+                    <div>
+                        <label>Card Photo (Inside Letter): </label>
+                        <input type="file" id="card_image" accept="image/*">
+                    </div>
+
+                    <div>
+                        <label>Gift Photo (Painting): </label>
+                        <input type="file" id="gift_image" accept="image/*">
+                    </div>
+
+                    <div>
+                        <label>Background Loop Song (Soft): </label>
+                        <input type="file" id="audio_loop" accept="audio/*">
+                    </div>
+
+                    <div>
+                        <label>Celebration Song (Peppy): </label>
+                        <input type="file" id="audio_celebration" accept="audio/*">
+                    </div>
+
+                    <button type="submit">Generate Wish Link ✨</button>
+                </form>
+
+                <div id="result" style="display: none;">
+                    <h3>🎉 Wish Created Successfully!</h3>
+                    <p>Share this magical link:</p>
+                    <div style="margin: 10px 0; font-weight: bold; word-break: break-all;" id="linkDisplay"></div>
+                    <a id="wishLink" href="#" target="_blank" class="preview-btn">Open Wish Now 🚀</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = '<%= supabaseUrl %>';
+        const supabaseKey = '<%= supabaseKey %>';
+        const { createClient } = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+        async function login() {
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin + '/admin'
+                }
+            });
+
+            if (error) {
+                console.error("Login failed: ", error.message);
+                alert("Login failed: " + error.message);
+            }
+        }
+
+        async function logout() {
+            const { error } = await supabaseClient.auth.signOut();
+            if (!error) {
+                window.location.reload();
+            }
+        }
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                document.getElementById('auth-container').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+            } else {
+                document.getElementById('auth-container').style.display = 'block';
+                document.getElementById('app-container').style.display = 'none';
+            }
+        });
+
+        document.getElementById('wishForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "Uploading & Generating... ⏳";
+            submitBtn.disabled = true;
+
+            try {
+                const files = {
+                    main_image: document.getElementById('main_image').files[0],
+                    card_image: document.getElementById('card_image').files[0],
+                    gift_image: document.getElementById('gift_image').files[0],
+                    audio_loop: document.getElementById('audio_loop').files[0],
+                    audio_celebration: document.getElementById('audio_celebration').files[0]
+                };
+
+                const urls = {};
+
+                for (const [key, file] of Object.entries(files)) {
+                    if (file) {
+                        const sanitizedFileName = file.name.replace(/[^a-z0-9.]/gi, '_').toLowerCase();
+                        const filePath = 'public/' + Date.now() + '_' + key + '_' + sanitizedFileName;
+
+                        const { data, error } = await supabaseClient.storage
+                            .from('wish-images')
+                            .upload(filePath, file);
+
+                        if (error) throw error;
+
+                        if (data) {
+                            const { data: publicUrlData } = supabaseClient.storage
+                                .from('wish-images')
+                                .getPublicUrl(filePath);
+                            urls[key + '_url'] = publicUrlData.publicUrl;
+                        }
+                    }
+                }
+
+                const user = (await supabaseClient.auth.getUser()).data.user;
+                if (!user) throw new Error("User not authenticated");
+
+                const slugValue = document.getElementById('slug').value;
+                const { error } = await supabaseClient.from('wishes').insert({
+                    user_id: user.id,
+                    slug: slugValue,
+                    recipient_name: document.getElementById('recipient_name').value,
+                    message_body: document.getElementById('message_body').value,
+                    ...urls
+                });
+
+                if (error) throw error;
+
+                // Success
+                const link = window.location.origin + "/wish/" + slugValue;
+                const resultDiv = document.getElementById('result');
+                const linkDisplay = document.getElementById('linkDisplay');
+                const linkAnchor = document.getElementById('wishLink');
+
+                linkDisplay.innerText = link;
+                linkAnchor.href = link;
+                resultDiv.style.display = 'block';
+
+                // Scroll to result
+                resultDiv.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error: " + error.message);
+            } finally {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>
