@@ -13,6 +13,10 @@ app.use(express.json());
 
 
 //-----------ROUTES-----------//
+app.get('/', (req, res) => {
+    res.redirect('/admin');
+});
+
 app.get('/admin', (req, res) => {
     res.render('admin', {
         supabaseUrl: process.env.SUPABASE_URL,
